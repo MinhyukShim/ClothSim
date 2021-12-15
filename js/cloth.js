@@ -62,6 +62,11 @@ function linkPoint(event){
         linkIndex = index;
         linkType = curLinkType;
     }
+    else if (currentLink===newLink){
+        currentLink = null;
+        points[index] =curLinkType;
+        index = 0;
+    }
     else{
         addStick(currentLink,newLink);
         currentLink = null;
