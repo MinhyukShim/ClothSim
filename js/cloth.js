@@ -100,7 +100,6 @@ function render(){
 
     for (var i = 0; i < sticks.length; i++) {
         var stick = sticks[i];
-        console.log(sticks.length);
         ctx.beginPath();
         ctx.lineWidth = 5;
         ctx.moveTo(stick.pointA.position.x, stick.pointA.position.y);
@@ -114,7 +113,7 @@ function render(){
 function clickPoint(event) {
     var x = event.clientX - rect.left ;
     var y = event.clientY - rect.top;
-    if( ! (x<0 ||x>1920 || y <0 || y >1080)){
+    if( ! (x<0 ||x>1600 || y <0 || y >800)){
         if(!isOnPointLocked(points,new Vector2d(x,y),size*2)){
             addPoint(x,y,points);
         }
