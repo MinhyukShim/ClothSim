@@ -45,7 +45,7 @@ function linkPoint(event){
     var x = event.clientX - rect.left ;
     var y = event.clientY - rect.top;
     var newLink;
-    var index = 0;
+    var index = null;
     var curLinkType;
     for (var i = 0; i < points.length; i++) {
         if(isOnPoint(points[i],new Vector2d(x,y),size*2)){
@@ -62,10 +62,10 @@ function linkPoint(event){
         linkIndex = index;
         linkType = curLinkType;
     }
-    else if (currentLink===newLink){
+    else if (linkIndex==index){
         currentLink = null;
-        points[index] =curLinkType;
-        index = 0;
+        points[index].pointType =linkType;
+        index = null;
     }
     else{
         addStick(currentLink,newLink);
