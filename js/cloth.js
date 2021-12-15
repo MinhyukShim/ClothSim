@@ -11,6 +11,7 @@ var gravity = new Vector2d(0,9.8);
 var currentLink = null;
 var linkIndex = null;
 var linkType = null;
+var numIts = 100;
 
 function simulate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -24,16 +25,17 @@ function simulate(){
             curPoint.prevPosition = origPos;
         }
     }
-
-    for (var i =0; i<sticks.length; i++){
-        var currentStick = sticks[i];
-        var stickCentre = (currentStick.pointA.position.stickCentre(currentStick.pointB.position));
-        var stickDir = (currentStick.pointA.position.subtract(currentStick.pointB.position)).normalize();
-        if(currentStick.pointA.pointType!=PointType.Locked){
-            currentStick.pointA.position = stickCentre.add(stickDir.mult(currentStick.length).divide(2));
-        }
-        if(currentStick.pointB.pointType!=PointType.Locked){
-            currentStick.pointB.position = stickCentre.subtract(stickDir.mult(currentStick.length).divide(2));
+    for (var j = 0; j <numIts; j++){
+        for (var i =0; i<sticks.length; i++){
+            var currentStick = sticks[i];
+            var stickCentre = (currentStick.pointA.position.stickCentre(currentStick.pointB.position));
+            var stickDir = (currentStick.pointA.position.subtract(currentStick.pointB.position)).normalize();
+            if(currentStick.pointA.pointType!=PointType.Locked){
+                currentStick.pointA.position = stickCentre.add(stickDir.mult(currentStick.length).divide(2));
+            }
+            if(currentStick.pointB.pointType!=PointType.Locked){
+                currentStick.pointB.position = stickCentre.subtract(stickDir.mult(currentStick.length).divide(2));
+            }
         }
     }
     render();
@@ -108,6 +110,7 @@ function render(){
         ctx.stroke();
         ctx.closePath(); 
     }
+
 }
 
 function clickPoint(event) {
