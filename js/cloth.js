@@ -11,30 +11,76 @@ var gravity = new Vector2d(0,9.8);
 var currentLink = null;
 var linkIndex = null;
 var linkType = null;
-var numIts = 100;
+var numIts = 5;
+var timeInterval = 0.025
+
+function continualSimulate(){
+    oldTime = new Date().getTime();
+
+
+    var outer = setInterval(function(){
+
+        for (var i =0; i<points.length; i++){
+            var curPoint = points[i];
+            if(!(curPoint.pointType===PointType.Locked)){
+                var origPos = curPoint.position;
+                var diff = curPoint.position.subtract(curPoint.prevPosition);
+                curPoint.position = curPoint.position.add(diff);
+                curPoint.position = curPoint.position.add(gravity.mult(timeInterval*timeInterval));
+                curPoint.prevPosition = origPos;
+            }
+        }
+        for (var j = 0; j <numIts; j++){
+            for (var i =0; i<sticks.length; i++){
+                var currentStick = sticks[i];
+                var aVector =currentStick.pointA.position;
+                var bVector =  currentStick.pointB.position;
+                var stickCentre = (aVector.stickCentre(bVector));
+                var stickDir = (aVector.subtract(bVector)).normalize();
+
+
+                if(currentStick.pointA.pointType!=PointType.Locked){
+                    currentStick.pointA.position = stickCentre.add(stickDir.mult(currentStick.length).divide(2));
+                }
+                if(currentStick.pointB.pointType!=PointType.Locked){
+                    currentStick.pointB.position = stickCentre.subtract(stickDir.mult(currentStick.length).divide(2));
+                }
+            }
+        }
+        render();
+    
+    } ,timeInterval/1000);
+}
+
+
 
 function simulate(){
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (var i =0; i<points.length; i++){
-        var curPoint = points[i];
-        if(!(curPoint.pointType===PointType.Locked)){
-            var origPos = curPoint.position;
-            var diff = curPoint.position.subtract(curPoint.prevPosition);
-            curPoint.position = curPoint.position.add(diff);
-            curPoint.position = curPoint.position.add(gravity);
-            curPoint.prevPosition = origPos;
-        }
-    }
-    for (var j = 0; j <numIts; j++){
-        for (var i =0; i<sticks.length; i++){
-            var currentStick = sticks[i];
-            var stickCentre = (currentStick.pointA.position.stickCentre(currentStick.pointB.position));
-            var stickDir = (currentStick.pointA.position.subtract(currentStick.pointB.position)).normalize();
-            if(currentStick.pointA.pointType!=PointType.Locked){
-                currentStick.pointA.position = stickCentre.add(stickDir.mult(currentStick.length).divide(2));
+    for (var t =0; t<25; t++){
+        for (var i =0; i<points.length; i++){
+            var curPoint = points[i];
+            if(!(curPoint.pointType===PointType.Locked)){
+                var origPos = curPoint.position;
+                var diff = curPoint.position.subtract(curPoint.prevPosition);
+                curPoint.position = curPoint.position.add(diff);
+                curPoint.position = curPoint.position.add(gravity.mult(timeInterval*timeInterval));
+                curPoint.prevPosition = origPos;
             }
-            if(currentStick.pointB.pointType!=PointType.Locked){
-                currentStick.pointB.position = stickCentre.subtract(stickDir.mult(currentStick.length).divide(2));
+        }
+        for (var j = 0; j <numIts; j++){
+            for (var i =0; i<sticks.length; i++){
+                var currentStick = sticks[i];
+                var aVector =currentStick.pointA.position;
+                var bVector =  currentStick.pointB.position;
+                var stickCentre = (aVector.stickCentre(bVector));
+                var stickDir = (aVector.subtract(bVector)).normalize();
+
+
+                if(currentStick.pointA.pointType!=PointType.Locked){
+                    currentStick.pointA.position = stickCentre.add(stickDir.mult(currentStick.length).divide(2));
+                }
+                if(currentStick.pointB.pointType!=PointType.Locked){
+                    currentStick.pointB.position = stickCentre.subtract(stickDir.mult(currentStick.length).divide(2));
+                }
             }
         }
     }
@@ -42,6 +88,8 @@ function simulate(){
 
     
 }
+
+
 
 function linkPoint(event){
     var x = event.clientX - rect.left ;

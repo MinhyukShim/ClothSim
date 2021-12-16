@@ -5,6 +5,12 @@ class Point {
         this.pointType = pointType;
     }
 
+    clone(){
+
+        return new Point(this.position, pointType);
+
+    }
+
 
 
 }
